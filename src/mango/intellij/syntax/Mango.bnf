@@ -1,0 +1,36 @@
+{
+  parserClass="mango.intellij.syntax.Parser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Mango"
+  psiImplClassSuffix="Impl"
+  psiPackage="mango.intellij.syntax"
+  psiImplPackage="mango.intellij.syntax.impl"
+
+  elementTypeHolderClass="mango.intellij.syntax.MangoTypes"
+  elementTypeClass="mango.intellij.syntax.MangoElementType"
+  tokenTypeClass="mango.intellij.syntax.MangoTokenType"
+
+  psiImplUtilClass="mango.intellij.syntax.MangoPsiImplUtil"
+}
+
+simpleFile ::= (function|variable|useStatement|comment)*
+
+statement ::= (variable|useStatement|function|blockStatement|ifStatement|returnStatement|statementExpression)
+
+blockStatement ::= openbrace (statement|comment)* closedbrace
+variable ::= (val|var) identifier equals expression
+useStatement ::= use (identifier dot)* identifier star?
+function ::= annotation* fn (identifier dot)? identifier (openroundbracket (identifier identifier comma)* (identifier identifier)? closedroundbracket)? identifier? (blockStatement|expressionFunctionBody)?
+ifStatement ::= if expression blockStatement (else blockStatement|ifStatement)?
+returnStatement ::= return expression
+
+expressionFunctionBody ::= arrow comment? expression
+
+expression ::= ((unaryoperator? (literal|(identifier callSuffix?)) (dot identifier callSuffix?)*) (binaryoperator expression)?) | assignment
+statementExpression ::= ((identifier callSuffix? dot)* identifier callSuffix) | assignment
+callSuffix ::= openroundbracket ((expression comma)* expression)? closedroundbracket
+assignment ::= identifier equals expression
+
+comment ::= linecomment|blockcomment
